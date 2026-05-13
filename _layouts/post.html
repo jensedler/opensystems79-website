@@ -1,0 +1,27 @@
+---
+layout: default
+---
+<article class="post h-entry" itemscope itemtype="https://schema.org/BlogPosting">
+  <pre class="source-prompt" aria-hidden="true">$ cat {{ page.path }}</pre>
+  <header class="post-header">
+    <p class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}" class="dt-published" itemprop="datePublished">{{ page.date | date: "%Y-%m-%d" }}</time>
+      {%- if page.author -%}
+        <span class="sep">·</span>
+        <span class="p-author" itemprop="author">{{ page.author }}</span>
+      {%- endif -%}
+    </p>
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title }}</h1>
+    {%- if page.subtitle -%}
+      <p class="post-subtitle">{{ page.subtitle }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <a href="{{ '/' | relative_url }}">← zurück zur Übersicht</a>
+  </footer>
+</article>

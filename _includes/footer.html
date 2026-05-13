@@ -1,0 +1,12 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-row">
+    <span>© {{ 'now' | date: '%Y' }} {{ site.author.name }}</span>
+    <nav aria-label="Rechtliches">
+      <a href="{{ '/impressum/' | relative_url }}">Impressum</a>
+      <span class="sep">·</span>
+      <a href="{{ '/datenschutz/' | relative_url }}">Datenschutz</a>
+      <span class="sep">·</span>
+      <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+    </nav>
+  </div>
+</footer>

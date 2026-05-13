@@ -1,0 +1,15 @@
+<header class="site-header" role="banner">
+  <div class="site-brand">
+    <a class="site-title" href="{{ '/' | relative_url }}">
+      <span class="site-prompt">~/</span><span class="site-name">{{ site.title }}</span>
+    </a>
+    <p class="site-subtitle">{{ site.subtitle }}</p>
+  </div>
+
+  <nav class="site-nav" aria-label="Hauptnavigation">
+    <a href="{{ '/' | relative_url }}">posts</a>
+    <a href="{{ '/about/' | relative_url }}">about</a>
+    <a href="{{ '/feed.xml' | relative_url }}">rss</a>
+    {% include theme-toggle.html %}
+  </nav>
+</header>

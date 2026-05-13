@@ -1,0 +1,32 @@
+---
+layout: default
+title: Home
+---
+<section class="intro">
+  <pre class="intro-prompt" aria-hidden="true">$ cat ~/opensystems79/welcome.txt</pre>
+  <p class="intro-text">
+    Notizen, Halbgares und Halbwertszeiten von Jens.<br>
+    Über Software, Systeme und was sonst gerade durchs Hirn kullert<span class="cursor" aria-hidden="true"></span>
+  </p>
+</section>
+
+<section class="post-list-section">
+  <h2 class="section-marker">// posts</h2>
+  <ol class="post-list" reversed>
+    {%- assign visible_posts = site.posts | where_exp: "p", "p.date <= site.time" -%}
+    {%- for post in visible_posts -%}
+      <li class="post-list-item">
+        <a class="post-list-link" href="{{ post.url | relative_url }}">
+          <time class="post-list-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+          <span class="post-list-title">{{ post.title }}</span>
+        </a>
+        {%- if post.description -%}
+          <p class="post-list-desc">{{ post.description }}</p>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+    {%- if visible_posts.size == 0 -%}
+      <li class="post-list-empty">Noch keine Posts. Bald.<span class="cursor" aria-hidden="true"></span></li>
+    {%- endif -%}
+  </ol>
+</section>

@@ -1,0 +1,36 @@
+---
+layout: null
+permalink: /feed.xml
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>{{ site.title | xml_escape }}</title>
+    <description>{{ site.description | xml_escape }}</description>
+    <link>{{ site.url }}{{ site.baseurl }}/</link>
+    <atom:link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/rss+xml" />
+    <language>{{ site.lang | default: 'de' }}</language>
+    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
+    <generator>Jekyll {{ jekyll.version }}</generator>
+    {%- assign visible_posts = site.posts | where_exp: "p", "p.date <= site.time" -%}
+    {%- assign latest = visible_posts | sort: "date" | reverse | slice: 0, 20 -%}
+    {%- for post in latest -%}
+    <item>
+      <title>{{ post.title | xml_escape }}</title>
+      <link>{{ post.url | absolute_url }}</link>
+      <guid isPermaLink="true">{{ post.url | absolute_url }}</guid>
+      <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
+      <dc:creator>{{ post.author | default: site.author.name | xml_escape }}</dc:creator>
+      {%- if post.description -%}
+      <description>{{ post.description | xml_escape }}</description>
+      {%- else -%}
+      <description>{{ post.excerpt | strip_html | normalize_whitespace | truncate: 300 | xml_escape }}</description>
+      {%- endif -%}
+      <content:encoded><![CDATA[{{ post.content | strip }}]]></content:encoded>
+    </item>
+    {%- endfor -%}
+  </channel>
+</rss>
