@@ -13,7 +13,7 @@ Deutschland
 
 ## Kontakt
 
-E-Mail: [jhfvu783ubh@opensystems79.de](mailto:jhfvu783ubh@opensystems79.de)
+E-Mail: [web@opensystems79.de](mailto:web@opensystems79.de)
 
 ## Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
 

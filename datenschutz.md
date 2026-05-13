@@ -169,7 +169,3 @@ Urheberrechtshinweis und die Lizenzbestimmungen erhalten bleiben.
 ---
 
 *Stand: {{ site.time | date: "%Y-%m-%d" }}*
-
-*Diese Datenschutzerklärung wurde sorgfältig erstellt, ersetzt jedoch
-keine individuelle Rechtsberatung. Bei rechtlichen Fragen wenden Sie
-sich bitte an eine fachkundige Stelle.*

@@ -6,13 +6,13 @@ permalink: /about/
 
 ```
 $ whoami
-jens
+jens edler
 
 $ cat ~/.about
 opensystems79 — Diarrhea of a Madman
-Persönliches Blog. Notizen, Halbgares, Halbwertszeiten.
+Persönliches Blog. Notizen, Gedanken und Halbgares.
 ```
 
-Kontakt: [jhfvu783ubh@opensystems79.de](mailto:jhfvu783ubh@opensystems79.de)
+Kontakt: [web@opensystems79.de](mailto:web@opensystems79.de)
 
 [RSS-Feed](/feed.xml) · [Impressum](/impressum/) · [Datenschutz](/datenschutz/)
