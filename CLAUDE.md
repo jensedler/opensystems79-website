@@ -50,6 +50,12 @@ kein Tracking, keine externen Dependencies zur Laufzeit.
 - `_includes/footer.html` — © + Impressum/Datenschutz/RSS
 - `_includes/theme-toggle.html` — Button für `assets/js/theme.js`
 
+**Source-Prompt-Konvention:** Posts und Pages zeigen direkt unter dem
+Article-Tag eine muted Mono-Zeile `$ cat {{ page.path }}` (Klasse
+`.source-prompt`). Das ist Teil der Terminal-Anmutung und sollte
+beibehalten bleiben. Analog steht auf der Startseite ein
+`.intro-prompt` mit `$ cat ~/opensystems79/welcome.txt`.
+
 ### CSS-Design-System (in `assets/css/main.scss`)
 - **Fonts (lokal!)**: **JetBrains Mono** für ALLES — UI, Fließtext, Code,
   Headings. Voll-Mono-Setup (Terminal-Ästhetik). Wenn das später zu
