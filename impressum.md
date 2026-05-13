@@ -7,8 +7,8 @@ permalink: /impressum/
 ## Angaben gemäß § 5 TMG
 
 Jens Edler
-Adresse: *bitte ergänzen*
-PLZ Ort: *bitte ergänzen*
+An der Windwehe 166b
+33818 Leopoldshöhe
 Deutschland
 
 ## Kontakt
