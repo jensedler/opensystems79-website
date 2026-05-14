@@ -74,8 +74,16 @@ kein Tracking, keine externen Dependencies zur Laufzeit.
   als auch Dark
 
 ### JavaScript
-- **Genau eine JS-Datei**: `assets/js/theme.js`. Nur Theme-Toggle (Auto →
-  Light → Dark), persistiert in `localStorage` (Key: `theme`).
+- **Zwei JS-Dateien**, beide `defer` in `_layouts/default.html`:
+  - `assets/js/theme.js` — Theme-Toggle (Auto → Light → Dark), persistiert
+    in `localStorage` (Key: `theme`).
+  - `assets/js/effects.js` — CRT-/Terminal-Effekte (Boot-Splash,
+    Bildschirm-Flackern). Konzept & To-Do: `EFFEKTE.md` (im Build
+    `exclude`d). Stand: Phase 0 — nur gemeinsame Helfer, noch keine Effekte.
+- Dazu gibt es **ein Inline-Script** im `<head>` (`_includes/head.html`):
+  bisher nur die Theme-Pre-Hydration (verhindert FOUC). Mit Effekt 1 kommt
+  dort ein zweites, kurzes Inline-Script für die FOUC-freie
+  Splash-Entscheidung dazu — siehe `EFFEKTE.md`.
 - **Bitte keine** Build-Tools (kein Node, kein npm). Jekyll baut Sass
   direkt; JS ist plain ES5/6 ohne Transpilation.
 

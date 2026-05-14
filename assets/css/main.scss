@@ -584,3 +584,19 @@ pre code {
   .na              { color: #ffb454; }
   .nt              { color: #c8a3e6; }
 }
+
+/* ==========================================================================
+   Effekte — CRT-/Terminal-Spielereien
+   Konzept & Roadmap: siehe EFFEKTE.md. Logik in assets/js/effects.js.
+   Grundregel: Jede Bewegung gehört hinter `prefers-reduced-motion: reduce`.
+   Phase 0 — nur Struktur, noch keine Regeln.
+   ========================================================================== */
+
+/* ---- Effekt 1: Boot-Splash (Startseite) ----
+   Vollflächen-Overlay über der echten Seite. Markup `#boot-splash` in
+   index.html, getriggert über `html.splash-active` (Inline-Script im
+   <head>). Folgt in Phase 1. */
+
+/* ---- Effekt 2: CRT-Flackern (alle Seiten) ----
+   Kurzes Zucken des Screen-Wrappers. Klasse `.crt-glitch`, getriggert aus
+   effects.js nach zufälliger Verzögerung. Folgt in Phase 2. */
