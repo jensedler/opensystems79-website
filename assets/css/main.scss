@@ -676,5 +676,50 @@ html.splash-active #boot-splash {
 }
 
 /* ---- Effekt 2: CRT-Flackern (alle Seiten) ----
-   Kurzes Zucken des Screen-Wrappers. Klasse `.crt-glitch`, getriggert aus
-   effects.js nach zufälliger Verzögerung. Folgt in Phase 2. */
+   Kurzes Zucken des Screen-Wrappers `.crt-screen` (umschließt `.wrap` in
+   _layouts/default.html). `.crt-glitch` wird aus effects.js nach einer
+   zufälligen Verzögerung gesetzt und nach `animationend` wieder entfernt.
+   Der Wrapper hat bewusst keinen eigenen Hintergrund — so zeigt der
+   Jitter nie eine Lücke am Rand, der Body-Hintergrund bleibt überall. */
+.crt-screen.crt-glitch {
+  animation: crt-glitch 0.85s linear;
+  transform-origin: 50% 0;
+  will-change: transform, filter;
+}
+
+/* Zwei Zuck-Schübe mit einer Ruhe dazwischen: Jitter (translateX),
+   vertikales Stauchen (scaleY), kurzes Verkanten (skewX), kräftiger
+   Helligkeits-/Kontrastpuls und chromatische Aberration (text-shadow).
+   Deutlich sichtbar, damit es als Absicht durchgeht — aber kurz. */
+@keyframes crt-glitch {
+  0%   { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  5%   { transform: translateX(-6px) scaleY(1.03) skewX(-0.6deg); filter: brightness(1.55) contrast(1.25);
+         text-shadow: -3px 0 rgba(255, 60, 80, 0.6), 3px 0 rgba(60, 200, 255, 0.6); }
+  11%  { transform: translateX(5px) scaleY(0.97) skewX(0.5deg);   filter: brightness(0.65) contrast(1.1);
+         text-shadow: 3px 0 rgba(255, 60, 80, 0.6), -3px 0 rgba(60, 200, 255, 0.6); }
+  17%  { transform: translateX(-3px) scaleY(1.018) skewX(-0.3deg); filter: brightness(1.35);
+         text-shadow: -2px 0 rgba(255, 60, 80, 0.5), 2px 0 rgba(60, 200, 255, 0.5); }
+  24%  { transform: translateX(2px) scaleY(0.99) skewX(0deg);     filter: brightness(0.85);
+         text-shadow: 1px 0 rgba(255, 60, 80, 0.4), -1px 0 rgba(60, 200, 255, 0.4); }
+  32%  { transform: translateX(-1px) scaleY(1.005) skewX(0deg);   filter: brightness(1.1);
+         text-shadow: none; }
+  40%  { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  /* kurze Ruhe */
+  60%  { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  66%  { transform: translateX(4px) scaleY(1.02) skewX(0.4deg);   filter: brightness(1.4) contrast(1.15);
+         text-shadow: 2px 0 rgba(255, 60, 80, 0.55), -2px 0 rgba(60, 200, 255, 0.55); }
+  72%  { transform: translateX(-3px) scaleY(0.985) skewX(-0.3deg); filter: brightness(0.75);
+         text-shadow: -2px 0 rgba(255, 60, 80, 0.45), 2px 0 rgba(60, 200, 255, 0.45); }
+  78%  { transform: translateX(1px) scaleY(1.004) skewX(0deg);    filter: brightness(1.12);
+         text-shadow: none; }
+  84%  { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  100% { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crt-screen.crt-glitch { animation: none; }
+}

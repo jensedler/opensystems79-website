@@ -94,5 +94,27 @@
 
   initBootSplash();
 
-  /* Effekt 2 (CRT-Flackern) folgt in Phase 2. */
+  /* ---- Effekt 2: CRT-Flackern (alle Seiten) ----
+     Selten und überraschend: 1-zu-10-Wurf pro Seitenladen. Bei Treffer
+     flackert `.crt-screen` nach einer zufälligen Verzögerung (4–25 s)
+     kurz auf — wie ein Röhrenmonitor, der die Synchro verliert. */
+  function initCrtGlitch() {
+    if (prefersReducedMotion()) return;
+    if (!chance(0.1)) return;
+
+    var screen = document.querySelector('.crt-screen');
+    if (!screen) return;
+
+    window.setTimeout(function () {
+      function onEnd(e) {
+        if (e.animationName !== 'crt-glitch') return;
+        screen.removeEventListener('animationend', onEnd);
+        screen.classList.remove('crt-glitch');
+      }
+      screen.addEventListener('animationend', onEnd);
+      screen.classList.add('crt-glitch');
+    }, randomInt(4000, 25000));
+  }
+
+  initCrtGlitch();
 })();

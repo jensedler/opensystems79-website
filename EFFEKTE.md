@@ -2,9 +2,10 @@
 
 Planungsdokument für die „delightful" Effekte auf opensystems79.de.
 **Kein** Teil des Deployments (in `_config.yml` unter `exclude`).
-Stand: 2026-05-14 — Phase 0 (Fundament) und Phase 1 (Boot-Splash) umgesetzt
-und von Jens abgenommen. Als Nächstes: Phase 2 (CRT-Flackern). Detaillierter
-Fortschritt: siehe To-Do-Liste unten.
+Stand: 2026-05-14 — Phasen 0–2 umgesetzt und von Jens abgenommen
+(Boot-Splash + CRT-Flackern; Flacker-Stärke auf seinen Wunsch verstärkt).
+Als Nächstes: Phase 3 (Politur & QA). Detaillierter Fortschritt: siehe
+To-Do-Liste unten.
 
 ## Ziel & Haltung
 
@@ -103,18 +104,19 @@ Verzögerung „einfach so" rein.
 
 1. `effects.js` würfelt bei `DOMContentLoaded`.
 2. Bei Treffer: `setTimeout` mit zufälligem Delay.
-3. Danach Klasse `crt-glitch` auf einen Screen-Wrapper (z.B. `.wrap` oder ein
-   neuer `<div class="crt-screen">` um den Inhalt).
-4. CSS-Keyframe-Animation, kombiniert aus:
-   - horizontalem Jitter (`translateX`, wenige px),
-   - leichtem vertikalem Stauchen/Rollen (`scaleY` / verschobenes
-     Scanline-Band via `clip-path`),
-   - Helligkeits-/Kontrast-Puls (`filter: brightness() contrast()`),
-   - kurzer Farbverschiebung (chromatische Aberration via `text-shadow`).
+3. Danach Klasse `crt-glitch` auf den `.crt-screen`-Wrapper (umschließt
+   `.wrap`, transparent — so zeigt der Jitter keine Randlücke).
+4. CSS-Keyframe-Animation (`@keyframes crt-glitch`, 0,85 s, zwei Schübe),
+   kombiniert aus:
+   - horizontalem Jitter (`translateX`, bis ±6 px),
+   - vertikalem Stauchen (`scaleY`, ±3 %) und Verkanten (`skewX`),
+   - kräftigem Helligkeits-/Kontrast-Puls (`filter`),
+   - chromatischer Aberration (`text-shadow`, rot/cyan-Versatz).
 5. Nach `animationend` Klasse wieder entfernen.
 
-**Wichtig:** Subtil halten — es soll „kurz gezuckt", nicht „kaputt"
-aussehen. Werte beim Umsetzen im Browser feinjustieren.
+**Umgesetzt:** Erste Werte waren bewusst sehr dezent — auf Jens' Wunsch
+dann deutlich verstärkt, damit das Flackern klar als Absicht durchgeht
+und nicht wie ein Rendering-Bug wirkt. Immer noch kurz (0,85 s).
 
 ---
 
@@ -167,16 +169,21 @@ Abzuarbeiten von oben nach unten. Phase 0 ist Voraussetzung für 1 & 2.
 - [x] Test im Browser: Animation, Tempo, Abbruch, beide Themes — von Jens
       abgenommen (Tempo auf seinen Wunsch entschleunigt)
 
-### Phase 2 — CRT-Flackern
+### Phase 2 — CRT-Flackern ✅
 
-- [ ] Entscheiden: Animation auf `.wrap` oder neuen `.crt-screen`-Wrapper
-      in `_layouts/default.html`
-- [ ] CSS: `@keyframes` für das Flackern (Jitter / Roll / Helligkeit /
-      Farbverschiebung), Klasse `.crt-glitch`
-- [ ] `effects.js`: 1-zu-10-Wurf bei `DOMContentLoaded`, `setTimeout` mit
-      Zufalls-Delay 4–25 s, Klasse setzen, nach `animationend` entfernen
-- [ ] reduced-motion-Skip verifizieren
-- [ ] Test: subtil genug, keine Layout-Sprünge, Performance ok, beide Themes
+- [x] Entscheidung: neuer transparenter `.crt-screen`-Wrapper um `.wrap` in
+      `_layouts/default.html` — transparent, damit der Jitter keine Randlücke
+      zeigt
+- [x] CSS: `@keyframes crt-glitch` (zwei Zuck-Schübe: Jitter, scaleY-Stauchen,
+      Helligkeits-/Kontrastpuls, chromatische Aberration via `text-shadow`),
+      Klasse `.crt-screen.crt-glitch`, `@media`-Guard für reduced-motion
+- [x] `effects.js`: `initCrtGlitch()` — reduced-motion-Skip, 1-zu-10-Wurf,
+      `setTimeout` mit Zufalls-Delay 4–25 s, Klasse setzen, nach
+      `animationend` entfernen
+- [x] reduced-motion-Skip doppelt abgesichert (JS-Gate + CSS-`@media`)
+- [x] Test im Browser: von Jens abgenommen — Flacker-Stärke auf seinen
+      Wunsch deutlich verstärkt (größerer Jitter, kräftigerer Helligkeits-
+      puls, neu: `skewX`-Verkanten), damit es klar als Absicht durchgeht
 
 ### Phase 3 — Politur & QA
 
