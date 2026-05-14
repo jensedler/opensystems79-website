@@ -2,10 +2,10 @@
 
 Planungsdokument für die „delightful" Effekte auf opensystems79.de.
 **Kein** Teil des Deployments (in `_config.yml` unter `exclude`).
-Stand: 2026-05-14 — Phasen 0–2 umgesetzt und von Jens abgenommen
-(Boot-Splash + CRT-Flackern; Flacker-Stärke auf seinen Wunsch verstärkt).
-Als Nächstes: Phase 3 (Politur & QA). Detaillierter Fortschritt: siehe
-To-Do-Liste unten.
+Stand: 2026-05-14 — Phasen 0–2 umgesetzt und abgenommen (Boot-Splash +
+CRT-Flackern). Backlog-Effekte in Arbeit: 404-Glitch umgesetzt, Degauss
+beim Theme-Wechsel als Nächstes. Danach Phase 3 (Politur & QA).
+Detaillierter Fortschritt: siehe To-Do-Liste unten.
 
 ## Ziel & Haltung
 
@@ -120,17 +120,17 @@ und nicht wie ein Rendering-Bug wirkt. Immer noch kurz (0,85 s).
 
 ---
 
-## Weitere Ideen (Backlog, noch nicht entschieden)
+## Weitere Ideen (Backlog)
 
-| Idee | Beschreibung | Aufwand | Risiko |
+| Idee | Beschreibung | Aufwand / Risiko | Status |
 |---|---|---|---|
-| **Degauss beim Theme-Wechsel** | Beim Umschalten Light/Dark ein kurzes Wackeln + Helligkeitsblitz, wie „Kanal umschalten". Klinkt sich direkt in `theme.js` ein. | klein | niedrig |
-| **Scanline-/Vignette-Layer** | Sehr dezente, dauerhafte Scanlines + Vignette als Overlay (evtl. nur Dark-Mode, evtl. per Toggle). | klein | mittel — kann schnell „zu viel" wirken |
-| **Title-Decode** | Post-Titel „entschlüsseln" sich beim Laden aus Zufallsglyphen zum echten Text (Matrix-Style), einmalig, schnell. | mittel | niedrig |
-| **CRT-Power-off** | Beim Verlassen/Klick auf externe Links die klassische „Zusammenfall-zu-Punkt"-Animation. | mittel | hoch — kann Navigation träge wirken lassen |
-| **Idle-Screensaver** | Nach X Minuten ohne Aktivität ein hüpfendes `~/`-Logo oder Sternenfeld. | mittel | niedrig |
-| **Konami-Code-Easteregg** | Geheime Tastenfolge schaltet „Phosphor-Grün-Modus" oder Matrix-Regen frei. | mittel | niedrig |
-| **404-Glitch** | Die ohnehin terminal-gestylte 404-Seite bekommt einen dauerhaft leicht „korrupten", glitchenden Error-Text. | klein | niedrig |
+| **404-Glitch** | Der ganze Inhaltsbereich der terminal-gestylten 404-Seite (`.error-page`, ohne Header) glitcht alle paar Sekunden kurz auf. | klein / niedrig | ✅ umgesetzt |
+| **Degauss beim Theme-Wechsel** | Beim Umschalten Light/Dark ein kurzes Wackeln + Helligkeitsblitz, wie „Kanal umschalten". Klinkt sich direkt in `theme.js` ein. | klein / niedrig | → als Nächstes |
+| **Scanline-/Vignette-Layer** | Sehr dezente, dauerhafte Scanlines + Vignette als Overlay (evtl. nur Dark-Mode, evtl. per Toggle). | klein / mittel — kann schnell „zu viel" wirken | offen |
+| **Title-Decode** | Post-Titel „entschlüsseln" sich beim Laden aus Zufallsglyphen zum echten Text (Matrix-Style), einmalig, schnell. | mittel / niedrig | offen |
+| **CRT-Power-off** | Beim Verlassen/Klick auf externe Links die klassische „Zusammenfall-zu-Punkt"-Animation. | mittel / hoch — kann Navigation träge wirken lassen | offen |
+| **Idle-Screensaver** | Nach X Minuten ohne Aktivität ein hüpfendes `~/`-Logo oder Sternenfeld. | mittel / niedrig | offen |
+| **Konami-Code-Easteregg** | Geheime Tastenfolge schaltet „Phosphor-Grün-Modus" oder Matrix-Regen frei. | mittel / niedrig | offen |
 
 ---
 
@@ -185,6 +185,27 @@ Abzuarbeiten von oben nach unten. Phase 0 ist Voraussetzung für 1 & 2.
       Wunsch deutlich verstärkt (größerer Jitter, kräftigerer Helligkeits-
       puls, neu: `skewX`-Verkanten), damit es klar als Absicht durchgeht
 
+### Effekt 3 — 404-Glitch ✅
+
+- [x] `[ERROR]`-Text in `404.html` in `span.glitch-text` mit `data-text` packen
+- [x] CSS (`main.scss`): `.glitch-text`-Bänder via `::before`/`::after`
+      (clip-path, `translateX`, rot/cyan), `@media`-Guard
+- [x] Auf Jens' Rückmeldung: Glitch betrifft jetzt den **ganzen
+      Inhaltsbereich** (`.error-page`, ohne Header) — Block-Ruckeln +
+      chromatischer Versatz + Helligkeitspuls, synchron (gleiche 4,2-s-
+      Periode) zu den Bändern der `[ERROR]`-Zeile
+- [x] `jekyll build --trace` sauber, Glitch-Markup im `_site/404.html`
+- [ ] Test im Browser: von Jens abzunehmen
+
+### Effekt 4 — Degauss beim Theme-Wechsel
+
+- [ ] `theme.js`: beim Umschalten kurz eine Klasse auf `<html>` setzen und
+      nach der Animation wieder entfernen
+- [ ] CSS (`main.scss`): `@keyframes` für kurzes Wackeln + Helligkeitsblitz,
+      `@media`-Guard für reduced-motion
+- [ ] `jekyll build --trace` sauber
+- [ ] Test im Browser: von Jens abzunehmen
+
 ### Phase 3 — Politur & QA
 
 - [ ] `bundle exec jekyll build --trace` ohne Errors/Warnings
@@ -196,4 +217,6 @@ Abzuarbeiten von oben nach unten. Phase 0 ist Voraussetzung für 1 & 2.
 
 ### Backlog — weitere Ideen
 
-- [ ] Aus der Ideen-Tabelle oben mit Jens priorisieren, dann einzeln planen
+- [ ] Restliche Ideen aus der Tabelle oben bei Bedarf einzeln planen
+      (Scanline-/Vignette-Layer, Title-Decode, CRT-Power-off,
+      Idle-Screensaver, Konami-Code-Easteregg)

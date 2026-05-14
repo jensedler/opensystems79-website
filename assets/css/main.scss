@@ -589,7 +589,6 @@ pre code {
    Effekte — CRT-/Terminal-Spielereien
    Konzept & Roadmap: siehe EFFEKTE.md. Logik in assets/js/effects.js.
    Grundregel: Jede Bewegung gehört hinter `prefers-reduced-motion: reduce`.
-   Phase 0 — nur Struktur, noch keine Regeln.
    ========================================================================== */
 
 /* ---- Effekt 1: Boot-Splash (Startseite) ----
@@ -722,4 +721,77 @@ html.splash-active #boot-splash {
 }
 @media (prefers-reduced-motion: reduce) {
   .crt-screen.crt-glitch { animation: none; }
+}
+
+/* ---- Effekt 3: 404-Glitch (nur 404-Seite) ----
+   Der ganze Inhaltsbereich der 404-Seite (`.error-page`, ohne Header)
+   glitcht alle paar Sekunden kurz auf: der Block ruckelt seitlich und
+   bekommt einen chromatischen Versatz, die `[ERROR]`-Zeile
+   (`span.glitch-text`) reißt zusätzlich in Bänder. Beide laufen mit
+   derselben 4,2-s-Periode, also synchron. Reines CSS, kein JS. */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  text-shadow:
+    0.5px 0 rgba(255, 60, 80, 0.25),
+    -0.5px 0 rgba(60, 200, 255, 0.25);
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;            /* im Ruhezustand unsichtbar */
+}
+.glitch-text::before {
+  color: #ff3c50;
+  animation: glitch-404-r 4.2s infinite linear;
+}
+.glitch-text::after {
+  color: #3cc8ff;
+  animation: glitch-404-c 4.2s infinite linear;
+}
+/* ~92 % der Schleife Ruhe, dann ein kurzer Schub mit versetzten,
+   in Bänder geclippten Kopien. */
+@keyframes glitch-404-r {
+  0%, 92%, 100% { opacity: 0;    transform: translateX(0);   clip-path: inset(50% 0 50% 0); }
+  93%           { opacity: 0.85; transform: translateX(-2px); clip-path: inset(8% 0 78% 0); }
+  95%           { opacity: 0.85; transform: translateX(2px);  clip-path: inset(62% 0 18% 0); }
+  97%           { opacity: 0.85; transform: translateX(-3px); clip-path: inset(33% 0 41% 0); }
+  99%           { opacity: 0.85; transform: translateX(1px);  clip-path: inset(78% 0 9% 0); }
+}
+@keyframes glitch-404-c {
+  0%, 92%, 100% { opacity: 0;   transform: translateX(0);   clip-path: inset(50% 0 50% 0); }
+  93%           { opacity: 0.7; transform: translateX(2px);  clip-path: inset(70% 0 12% 0); }
+  95%           { opacity: 0.7; transform: translateX(-2px); clip-path: inset(20% 0 64% 0); }
+  97%           { opacity: 0.7; transform: translateX(3px);  clip-path: inset(45% 0 28% 0); }
+  99%           { opacity: 0.7; transform: translateX(-1px); clip-path: inset(12% 0 80% 0); }
+}
+/* Der gesamte Inhaltsbereich ruckelt seitlich, bekommt einen chromatischen
+   Versatz (`text-shadow` vererbt sich auf allen Text im Block) und einen
+   Helligkeitspuls. Gleiche Periode und Fenster wie die Bänder oben. */
+.error-page {
+  animation: glitch-404-page 4.2s infinite linear;
+}
+@keyframes glitch-404-page {
+  0%, 92%, 100% { transform: translateX(0);    text-shadow: none;
+                  filter: none; }
+  93%           { transform: translateX(-4px); filter: brightness(1.25);
+                  text-shadow: -2px 0 rgba(255, 60, 80, 0.55), 2px 0 rgba(60, 200, 255, 0.55); }
+  95%           { transform: translateX(4px);  filter: brightness(0.8);
+                  text-shadow: 2px 0 rgba(255, 60, 80, 0.55), -2px 0 rgba(60, 200, 255, 0.55); }
+  97%           { transform: translateX(-2px); filter: brightness(1.12);
+                  text-shadow: -1px 0 rgba(255, 60, 80, 0.5), 1px 0 rgba(60, 200, 255, 0.5); }
+  99%           { transform: translateX(1px);  filter: none;
+                  text-shadow: 1px 0 rgba(255, 60, 80, 0.4), -1px 0 rgba(60, 200, 255, 0.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text::before,
+  .glitch-text::after,
+  .error-page { animation: none; }
 }
