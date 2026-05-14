@@ -41,7 +41,9 @@ kein Tracking, keine externen Dependencies zur Laufzeit.
 - Aktuell: `about.md`, `impressum.md`, `datenschutz.md`
 
 ### Layouts & Includes
-- `_layouts/default.html` — HTML-Skelett, lädt CSS/JS, rendert Header/Footer
+- `_layouts/default.html` — HTML-Skelett, lädt CSS/JS, rendert Header/Footer.
+  Enthält zusätzlich das `#boot-splash`-Overlay als erstes Body-Kind (nur
+  auf der Startseite, siehe `EFFEKTE.md`)
 - `_layouts/post.html`, `_layouts/page.html` — extenden `default`
 - `_includes/head.html` — `<head>`, inkl. Theme-Pre-Hydration-Script
   (verhindert FOUC beim Dark-Mode)
@@ -80,8 +82,21 @@ beibehalten bleiben. Analog steht auf der Startseite ein
   als auch Dark
 
 ### JavaScript
-- **Genau eine JS-Datei**: `assets/js/theme.js`. Nur Theme-Toggle (Auto →
-  Light → Dark), persistiert in `localStorage` (Key: `theme`).
+- **Zwei JS-Dateien**, beide `defer` in `_layouts/default.html`:
+  - `assets/js/theme.js` — Theme-Toggle (Auto → Light → Dark), persistiert
+    in `localStorage` (Key: `theme`). Löst beim aktiven Umschalten
+    zusätzlich den Degauss-Effekt aus (`.theme-degauss` auf `.crt-screen`).
+  - `assets/js/effects.js` — CRT-/Terminal-Effekte. Konzept, Roadmap &
+    To-Do: `EFFEKTE.md` (im Build `exclude`d). Aktuell: Boot-Splash der
+    Startseite (`initBootSplash()`: Cursor blinkt → Name wird getippt →
+    blinkt nach → Overlay blendet weg) und gelegentliches CRT-Flackern
+    auf allen Seiten (`initCrtGlitch()`: 1-zu-10-Wurf, nach 4–25 s ein
+    kurzes Zucken des `.crt-screen`-Wrappers).
+- Dazu gibt es **zwei Inline-Scripts** im `<head>` (`_includes/head.html`):
+  die Theme-Pre-Hydration (verhindert FOUC) und — nur auf der Startseite —
+  der Boot-Splash-Entscheider (würfelt 1-zu-5, max. 1× pro Browser-Session
+  via `sessionStorage`-Key `os79:splash`, setzt vor dem Paint
+  `html.splash-active`). Details: `EFFEKTE.md`.
 - **Bitte keine** Build-Tools (kein Node, kein npm). Jekyll baut Sass
   direkt; JS ist plain ES5/6 ohne Transpilation.
 

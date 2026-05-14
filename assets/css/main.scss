@@ -584,3 +584,251 @@ pre code {
   .na              { color: #ffb454; }
   .nt              { color: #c8a3e6; }
 }
+
+/* ==========================================================================
+   Effekte — CRT-/Terminal-Spielereien
+   Konzept & Roadmap: siehe EFFEKTE.md. Logik in assets/js/effects.js.
+   Grundregel: Jede Bewegung gehört hinter `prefers-reduced-motion: reduce`.
+   ========================================================================== */
+
+/* ---- Effekt 1: Boot-Splash (Startseite) ----
+   Vollflächen-Overlay über der echten Seite. Markup `#boot-splash` als
+   erstes Body-Kind in _layouts/default.html, getriggert über
+   `html.splash-active` (Inline-Script im <head>). Animation: effects.js. */
+#boot-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;            /* sichtbar erst über html.splash-active */
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+  background: var(--bg);
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+html.splash-active #boot-splash {
+  display: flex;
+  /* Failsafe: lädt effects.js nicht (404, Parse-Fehler), blendet das
+     Overlay nach 9 s trotzdem weg, statt die Seite zu verschlucken.
+     Im Normalfall entfernt effects.js html.splash-active vorher. */
+  animation: boot-splash-failsafe 0.6s ease 9s forwards;
+}
+#boot-splash.is-leaving {
+  opacity: 0;
+}
+@keyframes boot-splash-failsafe {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+.boot-splash-line {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--fg);
+  margin: 0;
+  white-space: nowrap;
+}
+.boot-splash-prompt {
+  color: var(--accent);
+  margin-right: 0.1em;
+}
+
+/* Cursor — gleicher CRT-Glow wie `.cursor`, blinkt per Default.
+   effects.js setzt `.is-steady` während des Tippens. */
+.boot-splash-cursor {
+  display: inline-block;
+  width: 0.6ch;
+  height: 1em;
+  background: var(--accent);
+  vertical-align: -0.1em;
+  margin-left: 0.12ch;
+  border-radius: 1px;
+  box-shadow:
+    0 0 1px var(--accent),
+    0 0 4px var(--accent-soft);
+  animation: blink 1.05s steps(1, end) infinite;
+}
+:root[data-theme="dark"] .boot-splash-cursor,
+:root:not([data-theme]) .boot-splash-cursor {
+  box-shadow:
+    0 0 2px var(--accent),
+    0 0 6px var(--accent-soft),
+    0 0 14px rgba(255, 180, 84, 0.28);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .boot-splash-cursor {
+    box-shadow:
+      0 0 2px var(--accent),
+      0 0 6px var(--accent-soft),
+      0 0 14px rgba(255, 180, 84, 0.28);
+  }
+}
+.boot-splash-cursor.is-steady {
+  animation: none;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .boot-splash-cursor { animation: none; opacity: 0.8; }
+}
+
+/* ---- Effekt 2: CRT-Flackern (alle Seiten) ----
+   Kurzes Zucken des Screen-Wrappers `.crt-screen` (umschließt `.wrap` in
+   _layouts/default.html). `.crt-glitch` wird aus effects.js nach einer
+   zufälligen Verzögerung gesetzt und nach `animationend` wieder entfernt.
+   Der Wrapper hat bewusst keinen eigenen Hintergrund — so zeigt der
+   Jitter nie eine Lücke am Rand, der Body-Hintergrund bleibt überall. */
+.crt-screen.crt-glitch {
+  animation: crt-glitch 0.85s linear;
+  transform-origin: 50% 0;
+  will-change: transform, filter;
+}
+
+/* Zwei Zuck-Schübe mit einer Ruhe dazwischen: Jitter (translateX),
+   vertikales Stauchen (scaleY), kurzes Verkanten (skewX), kräftiger
+   Helligkeits-/Kontrastpuls und chromatische Aberration (text-shadow).
+   Deutlich sichtbar, damit es als Absicht durchgeht — aber kurz. */
+@keyframes crt-glitch {
+  0%   { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  5%   { transform: translateX(-6px) scaleY(1.03) skewX(-0.6deg); filter: brightness(1.55) contrast(1.25);
+         text-shadow: -3px 0 rgba(255, 60, 80, 0.6), 3px 0 rgba(60, 200, 255, 0.6); }
+  11%  { transform: translateX(5px) scaleY(0.97) skewX(0.5deg);   filter: brightness(0.65) contrast(1.1);
+         text-shadow: 3px 0 rgba(255, 60, 80, 0.6), -3px 0 rgba(60, 200, 255, 0.6); }
+  17%  { transform: translateX(-3px) scaleY(1.018) skewX(-0.3deg); filter: brightness(1.35);
+         text-shadow: -2px 0 rgba(255, 60, 80, 0.5), 2px 0 rgba(60, 200, 255, 0.5); }
+  24%  { transform: translateX(2px) scaleY(0.99) skewX(0deg);     filter: brightness(0.85);
+         text-shadow: 1px 0 rgba(255, 60, 80, 0.4), -1px 0 rgba(60, 200, 255, 0.4); }
+  32%  { transform: translateX(-1px) scaleY(1.005) skewX(0deg);   filter: brightness(1.1);
+         text-shadow: none; }
+  40%  { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  /* kurze Ruhe */
+  60%  { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  66%  { transform: translateX(4px) scaleY(1.02) skewX(0.4deg);   filter: brightness(1.4) contrast(1.15);
+         text-shadow: 2px 0 rgba(255, 60, 80, 0.55), -2px 0 rgba(60, 200, 255, 0.55); }
+  72%  { transform: translateX(-3px) scaleY(0.985) skewX(-0.3deg); filter: brightness(0.75);
+         text-shadow: -2px 0 rgba(255, 60, 80, 0.45), 2px 0 rgba(60, 200, 255, 0.45); }
+  78%  { transform: translateX(1px) scaleY(1.004) skewX(0deg);    filter: brightness(1.12);
+         text-shadow: none; }
+  84%  { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+  100% { transform: translateX(0) scaleY(1) skewX(0deg);          filter: none;
+         text-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crt-screen.crt-glitch { animation: none; }
+}
+
+/* ---- Effekt 3: 404-Glitch (nur 404-Seite) ----
+   Der ganze Inhaltsbereich der 404-Seite (`.error-page`, ohne Header)
+   glitcht alle paar Sekunden kurz auf: der Block ruckelt seitlich und
+   bekommt einen chromatischen Versatz, die `[ERROR]`-Zeile
+   (`span.glitch-text`) reißt zusätzlich in Bänder. Beide laufen mit
+   derselben 4,2-s-Periode, also synchron. Reines CSS, kein JS. */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  text-shadow:
+    0.5px 0 rgba(255, 60, 80, 0.25),
+    -0.5px 0 rgba(60, 200, 255, 0.25);
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;            /* im Ruhezustand unsichtbar */
+}
+.glitch-text::before {
+  color: #ff3c50;
+  animation: glitch-404-r 4.2s infinite linear;
+}
+.glitch-text::after {
+  color: #3cc8ff;
+  animation: glitch-404-c 4.2s infinite linear;
+}
+/* ~92 % der Schleife Ruhe, dann ein kurzer Schub mit versetzten,
+   in Bänder geclippten Kopien. */
+@keyframes glitch-404-r {
+  0%, 92%, 100% { opacity: 0;    transform: translateX(0);   clip-path: inset(50% 0 50% 0); }
+  93%           { opacity: 0.85; transform: translateX(-2px); clip-path: inset(8% 0 78% 0); }
+  95%           { opacity: 0.85; transform: translateX(2px);  clip-path: inset(62% 0 18% 0); }
+  97%           { opacity: 0.85; transform: translateX(-3px); clip-path: inset(33% 0 41% 0); }
+  99%           { opacity: 0.85; transform: translateX(1px);  clip-path: inset(78% 0 9% 0); }
+}
+@keyframes glitch-404-c {
+  0%, 92%, 100% { opacity: 0;   transform: translateX(0);   clip-path: inset(50% 0 50% 0); }
+  93%           { opacity: 0.7; transform: translateX(2px);  clip-path: inset(70% 0 12% 0); }
+  95%           { opacity: 0.7; transform: translateX(-2px); clip-path: inset(20% 0 64% 0); }
+  97%           { opacity: 0.7; transform: translateX(3px);  clip-path: inset(45% 0 28% 0); }
+  99%           { opacity: 0.7; transform: translateX(-1px); clip-path: inset(12% 0 80% 0); }
+}
+/* Der gesamte Inhaltsbereich ruckelt seitlich, bekommt einen chromatischen
+   Versatz (`text-shadow` vererbt sich auf allen Text im Block) und einen
+   Helligkeitspuls. Gleiche Periode und Fenster wie die Bänder oben. */
+.error-page {
+  animation: glitch-404-page 4.2s infinite linear;
+}
+@keyframes glitch-404-page {
+  0%, 92%, 100% { transform: translateX(0);    text-shadow: none;
+                  filter: none; }
+  93%           { transform: translateX(-4px); filter: brightness(1.25);
+                  text-shadow: -2px 0 rgba(255, 60, 80, 0.55), 2px 0 rgba(60, 200, 255, 0.55); }
+  95%           { transform: translateX(4px);  filter: brightness(0.8);
+                  text-shadow: 2px 0 rgba(255, 60, 80, 0.55), -2px 0 rgba(60, 200, 255, 0.55); }
+  97%           { transform: translateX(-2px); filter: brightness(1.12);
+                  text-shadow: -1px 0 rgba(255, 60, 80, 0.5), 1px 0 rgba(60, 200, 255, 0.5); }
+  99%           { transform: translateX(1px);  filter: none;
+                  text-shadow: 1px 0 rgba(255, 60, 80, 0.4), -1px 0 rgba(60, 200, 255, 0.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text::before,
+  .glitch-text::after,
+  .error-page { animation: none; }
+}
+
+/* ---- Effekt 4: Degauss beim Theme-Wechsel ----
+   Beim aktiven Umschalten (Klick auf den Theme-Toggle) wackelt der
+   `.crt-screen`-Wrapper kurz aus und ein — wie ein Röhrenmonitor, der
+   sich nach dem "Kanalwechsel" neu synchronisiert. theme.js setzt die
+   Klasse `.theme-degauss` und entfernt sie nach `animationend`. */
+.crt-screen.theme-degauss {
+  animation: theme-degauss 0.6s ease-out;
+  transform-origin: 50% 50%;
+  will-change: transform, filter;
+}
+/* Kräftige gedämpfte Schwingung: großer erster Ausschlag — seitlicher
+   Sprung, Verkanten, Breit-/Hoch-Verzerrung, Helligkeitsblitz — dann
+   klingt jede Halbwelle kleiner aus, bis der Screen wieder steht. Die
+   Bewegung trägt den Effekt, damit er nicht in der Farb-Transition
+   untergeht. */
+@keyframes theme-degauss {
+  0%   { transform: translateX(0) scale(1, 1) skewX(0deg);               filter: none;
+         text-shadow: none; }
+  8%   { transform: translateX(-7px) scale(1.025, 0.96) skewX(-5deg);    filter: brightness(1.7) contrast(1.2);
+         text-shadow: -2px 0 rgba(255, 60, 80, 0.5), 2px 0 rgba(60, 200, 255, 0.5); }
+  20%  { transform: translateX(6px) scale(0.985, 1.03) skewX(4deg);      filter: brightness(0.58) contrast(1.1);
+         text-shadow: 2px 0 rgba(255, 60, 80, 0.4), -2px 0 rgba(60, 200, 255, 0.4); }
+  32%  { transform: translateX(-4px) scale(1.015, 0.985) skewX(-2.6deg); filter: brightness(1.35);
+         text-shadow: none; }
+  46%  { transform: translateX(3px) scale(0.996, 1.012) skewX(1.6deg);   filter: brightness(0.85);
+         text-shadow: none; }
+  62%  { transform: translateX(-1.6px) scale(1.004, 0.997) skewX(-0.8deg); filter: brightness(1.1);
+         text-shadow: none; }
+  80%  { transform: translateX(0.6px) scale(1, 1) skewX(0.3deg);         filter: brightness(0.99);
+         text-shadow: none; }
+  100% { transform: translateX(0) scale(1, 1) skewX(0deg);               filter: none;
+         text-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crt-screen.theme-degauss { animation: none; }
+}

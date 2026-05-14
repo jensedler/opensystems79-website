@@ -4,14 +4,24 @@
   {% include head.html %}
 </head>
 <body>
+  {%- if page.url == "/" -%}
+  <div id="boot-splash" aria-hidden="true" hidden>
+    <p class="boot-splash-line">
+      <span class="boot-splash-prompt">~/</span><span class="boot-splash-name" data-splash-target="{{ site.title }}"></span><span class="boot-splash-cursor"></span>
+    </p>
+  </div>
+  {%- endif -%}
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
-  <div class="wrap">
-    {% include header.html %}
-    <main id="main" class="site-main" role="main">
-      {{ content }}
-    </main>
-    {% include footer.html %}
+  <div class="crt-screen">
+    <div class="wrap">
+      {% include header.html %}
+      <main id="main" class="site-main" role="main">
+        {{ content }}
+      </main>
+      {% include footer.html %}
+    </div>
   </div>
   <script src="{{ '/assets/js/theme.js' | relative_url }}" defer></script>
+  <script src="{{ '/assets/js/effects.js' | relative_url }}" defer></script>
 </body>
 </html>

@@ -68,6 +68,7 @@ exclude:
   - node_modules/
   - README.md
   - CLAUDE.md
+  - EFFEKTE.md
   - scripts/
   - .github/
   - .ruby-version
