@@ -593,9 +593,87 @@ pre code {
    ========================================================================== */
 
 /* ---- Effekt 1: Boot-Splash (Startseite) ----
-   Vollflächen-Overlay über der echten Seite. Markup `#boot-splash` in
-   index.html, getriggert über `html.splash-active` (Inline-Script im
-   <head>). Folgt in Phase 1. */
+   Vollflächen-Overlay über der echten Seite. Markup `#boot-splash` als
+   erstes Body-Kind in _layouts/default.html, getriggert über
+   `html.splash-active` (Inline-Script im <head>). Animation: effects.js. */
+#boot-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;            /* sichtbar erst über html.splash-active */
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+  background: var(--bg);
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+html.splash-active #boot-splash {
+  display: flex;
+  /* Failsafe: lädt effects.js nicht (404, Parse-Fehler), blendet das
+     Overlay nach 9 s trotzdem weg, statt die Seite zu verschlucken.
+     Im Normalfall entfernt effects.js html.splash-active vorher. */
+  animation: boot-splash-failsafe 0.6s ease 9s forwards;
+}
+#boot-splash.is-leaving {
+  opacity: 0;
+}
+@keyframes boot-splash-failsafe {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+.boot-splash-line {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--fg);
+  margin: 0;
+  white-space: nowrap;
+}
+.boot-splash-prompt {
+  color: var(--accent);
+  margin-right: 0.1em;
+}
+
+/* Cursor — gleicher CRT-Glow wie `.cursor`, blinkt per Default.
+   effects.js setzt `.is-steady` während des Tippens. */
+.boot-splash-cursor {
+  display: inline-block;
+  width: 0.6ch;
+  height: 1em;
+  background: var(--accent);
+  vertical-align: -0.1em;
+  margin-left: 0.12ch;
+  border-radius: 1px;
+  box-shadow:
+    0 0 1px var(--accent),
+    0 0 4px var(--accent-soft);
+  animation: blink 1.05s steps(1, end) infinite;
+}
+:root[data-theme="dark"] .boot-splash-cursor,
+:root:not([data-theme]) .boot-splash-cursor {
+  box-shadow:
+    0 0 2px var(--accent),
+    0 0 6px var(--accent-soft),
+    0 0 14px rgba(255, 180, 84, 0.28);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .boot-splash-cursor {
+    box-shadow:
+      0 0 2px var(--accent),
+      0 0 6px var(--accent-soft),
+      0 0 14px rgba(255, 180, 84, 0.28);
+  }
+}
+.boot-splash-cursor.is-steady {
+  animation: none;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .boot-splash-cursor { animation: none; opacity: 0.8; }
+}
 
 /* ---- Effekt 2: CRT-Flackern (alle Seiten) ----
    Kurzes Zucken des Screen-Wrappers. Klasse `.crt-glitch`, getriggert aus

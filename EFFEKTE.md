@@ -2,7 +2,9 @@
 
 Planungsdokument für die „delightful" Effekte auf opensystems79.de.
 **Kein** Teil des Deployments (in `_config.yml` unter `exclude`).
-Stand: 2026-05-14 — noch nichts umgesetzt, reine Planung.
+Stand: 2026-05-14 — Phase 0 (Fundament) und Phase 1 (Boot-Splash) umgesetzt
+und von Jens abgenommen. Als Nächstes: Phase 2 (CRT-Flackern). Detaillierter
+Fortschritt: siehe To-Do-Liste unten.
 
 ## Ziel & Haltung
 
@@ -32,7 +34,7 @@ statt zu nerven. Spielerisch, aber nie im Weg.
 | Baustein | Ort | Zweck |
 |---|---|---|
 | Inline-Splash-Entscheider | `_includes/head.html` (nur wenn `page.url == "/"`) | Würfelt vor dem Paint, ob der Splash kommt; setzt ggf. `html.splash-active` |
-| Splash-Markup | `index.html` | Statisches `<div id="boot-splash" hidden>` — wird per CSS sichtbar, wenn `html.splash-active` |
+| Splash-Markup | `_layouts/default.html` (erstes Body-Kind, nur auf `/`) | Statisches `<div id="boot-splash" hidden>` — wird per CSS sichtbar, wenn `html.splash-active`. Bewusst als erstes Body-Kind statt in `index.html`, damit es vor dem Seiteninhalt paintet (FOUC-frei). |
 | `assets/js/effects.js` | neu, `defer` geladen in `_layouts/default.html` | Tipp-Animation des Splash + CRT-Flacker-Logik |
 | Effekt-CSS | `assets/css/main.scss` | Overlay-, Cursor-, Glitch-Keyframes |
 
@@ -134,34 +136,36 @@ aussehen. Werte beim Umsetzen im Browser feinjustieren.
 
 Abzuarbeiten von oben nach unten. Phase 0 ist Voraussetzung für 1 & 2.
 
-### Phase 0 — Fundament
+### Phase 0 — Fundament ✅
 
-- [ ] `assets/js/effects.js` anlegen, in `_layouts/default.html` mit `defer`
+- [x] `assets/js/effects.js` anlegen, in `_layouts/default.html` mit `defer`
       einbinden (nach `theme.js`)
-- [ ] Gemeinsame Helfer in `effects.js`: `prefersReducedMotion()`-Check,
+- [x] Gemeinsame Helfer in `effects.js`: `prefersReducedMotion()`-Check,
       Würfel-Helfer
-- [ ] CSS-Abschnitt „Effekte" in `main.scss` vorbereiten (Kommentar-Block,
+- [x] CSS-Abschnitt „Effekte" in `main.scss` vorbereiten (Kommentar-Block,
       Struktur)
-- [ ] `CLAUDE.md` aktualisieren: zweite JS-Datei + Inline-Splash-Script
+- [x] `CLAUDE.md` aktualisieren: zweite JS-Datei + Inline-Splash-Script
       dokumentieren (JS-Konvention war vorher „genau eine Datei")
 
-### Phase 1 — Boot-Splash
+### Phase 1 — Boot-Splash ✅
 
-- [ ] Inline-Entscheider-Script in `_includes/head.html`, nur für
+- [x] Inline-Entscheider-Script in `_includes/head.html`, nur für
       `page.url == "/"`: reduced-motion- & `sessionStorage`-Check, 1-zu-5-Wurf,
       `html.splash-active` + Flag `os79:splash` setzen
-- [ ] Splash-Markup `<div id="boot-splash" hidden>` in `index.html`
-      (Prompt `~/`, Ziel-Name, Cursor-Span)
-- [ ] CSS: Overlay-Layout (fixed, vollflächig, `--bg`), sichtbar bei
-      `html.splash-active`, deckt `.wrap` ab
-- [ ] CSS: zentrierte Tipp-Zeile, Cursor-Look (vorhandenen `.cursor`-Glow
-      wiederverwenden)
-- [ ] CSS: Ausblend-Transition + Safety-Auto-Fade nach ~4 s (falls JS fehlt)
-- [ ] `effects.js`: Tipp-Animation (Cursor-Blink → tippen → Blink →
-      ausblenden → Klasse entfernen)
-- [ ] `effects.js`: Abbruch per Klick / Taste / `Esc`
-- [ ] Test: Häufigkeit gefühlt ~1/5, max. 1× pro Session, kein FOUC,
-      Reload-Verhalten, JS-aus-Fallback
+- [x] Splash-Markup `<div id="boot-splash" hidden>` als erstes Body-Kind in
+      `_layouts/default.html` (nur auf `/`; Prompt `~/`, Ziel-Name, Cursor-Span)
+- [x] CSS: Overlay-Layout (fixed, vollflächig, opakes `--bg`), sichtbar bei
+      `html.splash-active` — deckt den Seiteninhalt durch volle Deckkraft ab
+      (kein separates `.wrap`-Verstecken nötig)
+- [x] CSS: zentrierte Tipp-Zeile, Cursor-Look (CRT-Glow wie `.cursor`,
+      blinkt per Default, `.is-steady` pausiert beim Tippen)
+- [x] CSS: Ausblend-Transition (`.is-leaving`) + CSS-Failsafe-Auto-Fade nach
+      7 s, falls `effects.js` nicht lädt
+- [x] `effects.js`: Tipp-Animation (Cursor-Blink → tippen → Blink →
+      ausblenden → `splash-active` entfernen)
+- [x] `effects.js`: Abbruch per Klick / Taste
+- [x] Test im Browser: Animation, Tempo, Abbruch, beide Themes — von Jens
+      abgenommen (Tempo auf seinen Wunsch entschleunigt)
 
 ### Phase 2 — CRT-Flackern
 

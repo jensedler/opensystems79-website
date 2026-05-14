@@ -33,4 +33,24 @@
   })();
 </script>
 
+{%- if page.url == "/" -%}
+<script>
+  /* Boot-Splash-Entscheider — siehe EFFEKTE.md. Läuft vor dem ersten Paint,
+     nur auf der Startseite: 1-zu-5-Wurf, pro Browser-Session höchstens
+     einmal, Reduced-Motion wird respektiert. Bei Treffer setzt es
+     html.splash-active — effects.js übernimmt dann die Animation. */
+  (function() {
+    try {
+      if (window.matchMedia &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (sessionStorage.getItem('os79:splash')) return;
+      if (Math.random() < 0.2) {
+        sessionStorage.setItem('os79:splash', '1');
+        document.documentElement.classList.add('splash-active');
+      }
+    } catch (e) {}
+  })();
+</script>
+{%- endif -%}
+
 {%- seo title=false -%}

@@ -4,6 +4,13 @@
   {% include head.html %}
 </head>
 <body>
+  {%- if page.url == "/" -%}
+  <div id="boot-splash" aria-hidden="true" hidden>
+    <p class="boot-splash-line">
+      <span class="boot-splash-prompt">~/</span><span class="boot-splash-name" data-splash-target="{{ site.title }}"></span><span class="boot-splash-cursor"></span>
+    </p>
+  </div>
+  {%- endif -%}
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <div class="wrap">
     {% include header.html %}

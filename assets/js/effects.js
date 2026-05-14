@@ -28,8 +28,71 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  /* ---- Effekt-Registrierung ----
-     Effekt 1 (Boot-Splash) und Effekt 2 (CRT-Flackern) folgen hier in
-     Phase 1 bzw. 2 und greifen auf die Helfer oben zu. Bis dahin tut
-     diese Datei bewusst nichts. */
+  /* ---- Effekt 1: Boot-Splash (Startseite) ----
+     Läuft nur, wenn das Inline-Script im <head> `html.splash-active`
+     gesetzt hat (Startseite, 1-zu-5-Wurf, Reduced-Motion dort bereits
+     ausgeschlossen). Ablauf: Cursor blinkt -> Name wird getippt ->
+     Cursor blinkt nach -> Overlay blendet weg -> Seite wird freigegeben.
+     Abbruch jederzeit per Klick oder Tastendruck. */
+  function initBootSplash() {
+    var root = document.documentElement;
+    if (!root.classList.contains('splash-active')) return;
+
+    var splash = document.getElementById('boot-splash');
+    if (!splash) { root.classList.remove('splash-active'); return; }
+
+    var nameEl = splash.querySelector('[data-splash-target]');
+    var cursorEl = splash.querySelector('.boot-splash-cursor');
+    var target = (nameEl && nameEl.getAttribute('data-splash-target')) || '';
+
+    var timers = [];
+    var done = false;
+
+    function later(fn, ms) {
+      timers.push(window.setTimeout(fn, ms));
+    }
+
+    function reveal() {
+      root.classList.remove('splash-active');
+    }
+
+    /* Abbruch bzw. regulärer Abschluss: Timer stoppen, Listener lösen,
+       Overlay ausblenden und die Seite freigeben. */
+    function finish() {
+      if (done) return;
+      done = true;
+      for (var i = 0; i < timers.length; i++) window.clearTimeout(timers[i]);
+      document.removeEventListener('keydown', finish);
+      splash.removeEventListener('click', finish);
+      splash.classList.add('is-leaving');
+      splash.addEventListener('transitionend', reveal);
+      later(reveal, 800);   /* Fallback, falls transitionend ausbleibt */
+    }
+
+    document.addEventListener('keydown', finish);
+    splash.addEventListener('click', finish);
+
+    /* Phase 2: Name Zeichen für Zeichen tippen, Cursor steht still. */
+    function typeChar(i) {
+      if (done) return;
+      if (i >= target.length) {
+        /* Phase 3: Cursor blinkt noch ein paar Mal, dann ausblenden. */
+        if (cursorEl) cursorEl.classList.remove('is-steady');
+        later(finish, 3000);
+        return;
+      }
+      nameEl.textContent += target.charAt(i);
+      later(function () { typeChar(i + 1); }, randomInt(105, 160));
+    }
+
+    /* Phase 1: Cursor blinkt kurz (CSS-Default), bevor das Tippen startet. */
+    later(function () {
+      if (cursorEl) cursorEl.classList.add('is-steady');
+      typeChar(0);
+    }, 850);
+  }
+
+  initBootSplash();
+
+  /* Effekt 2 (CRT-Flackern) folgt in Phase 2. */
 })();

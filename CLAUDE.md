@@ -41,7 +41,9 @@ kein Tracking, keine externen Dependencies zur Laufzeit.
 - Aktuell: `about.md`, `impressum.md`, `datenschutz.md`
 
 ### Layouts & Includes
-- `_layouts/default.html` — HTML-Skelett, lädt CSS/JS, rendert Header/Footer
+- `_layouts/default.html` — HTML-Skelett, lädt CSS/JS, rendert Header/Footer.
+  Enthält zusätzlich das `#boot-splash`-Overlay als erstes Body-Kind (nur
+  auf der Startseite, siehe `EFFEKTE.md`)
 - `_layouts/post.html`, `_layouts/page.html` — extenden `default`
 - `_includes/head.html` — `<head>`, inkl. Theme-Pre-Hydration-Script
   (verhindert FOUC beim Dark-Mode)
@@ -77,13 +79,16 @@ kein Tracking, keine externen Dependencies zur Laufzeit.
 - **Zwei JS-Dateien**, beide `defer` in `_layouts/default.html`:
   - `assets/js/theme.js` — Theme-Toggle (Auto → Light → Dark), persistiert
     in `localStorage` (Key: `theme`).
-  - `assets/js/effects.js` — CRT-/Terminal-Effekte (Boot-Splash,
-    Bildschirm-Flackern). Konzept & To-Do: `EFFEKTE.md` (im Build
-    `exclude`d). Stand: Phase 0 — nur gemeinsame Helfer, noch keine Effekte.
-- Dazu gibt es **ein Inline-Script** im `<head>` (`_includes/head.html`):
-  bisher nur die Theme-Pre-Hydration (verhindert FOUC). Mit Effekt 1 kommt
-  dort ein zweites, kurzes Inline-Script für die FOUC-freie
-  Splash-Entscheidung dazu — siehe `EFFEKTE.md`.
+  - `assets/js/effects.js` — CRT-/Terminal-Effekte. Konzept, Roadmap &
+    To-Do: `EFFEKTE.md` (im Build `exclude`d). Stand: Phase 1 erledigt —
+    Boot-Splash der Startseite (`initBootSplash()`: Cursor blinkt → Name
+    wird getippt → blinkt nach → Overlay blendet weg). Phase 2
+    (Bildschirm-Flackern) steht noch aus.
+- Dazu gibt es **zwei Inline-Scripts** im `<head>` (`_includes/head.html`):
+  die Theme-Pre-Hydration (verhindert FOUC) und — nur auf der Startseite —
+  der Boot-Splash-Entscheider (würfelt 1-zu-5, max. 1× pro Browser-Session
+  via `sessionStorage`-Key `os79:splash`, setzt vor dem Paint
+  `html.splash-active`). Details: `EFFEKTE.md`.
 - **Bitte keine** Build-Tools (kein Node, kein npm). Jekyll baut Sass
   direkt; JS ist plain ES5/6 ohne Transpilation.
 
