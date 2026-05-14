@@ -1,10 +1,9 @@
 /* effects.js — CRT-/Terminal-Effekte für opensystems79.
    Lädt mit `defer` nach theme.js. Konzept & Roadmap: siehe EFFEKTE.md.
 
-   Phase 0 (dieser Stand): nur das Fundament — gemeinsame Helfer.
-   Phase 1: Boot-Splash (Startseite).
-   Phase 2: CRT-Flackern (alle Seiten).
-   Beide Effekte werden unten in dieser IIFE registriert. */
+   Enthält: gemeinsame Helfer, Effekt 1 (Boot-Splash, Startseite) und
+   Effekt 2 (CRT-Flackern, alle Seiten). Der 404-Glitch ist reines CSS,
+   der Degauss beim Theme-Wechsel sitzt in theme.js. */
 (function () {
   'use strict';
 

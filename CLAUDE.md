@@ -78,13 +78,14 @@ kein Tracking, keine externen Dependencies zur Laufzeit.
 ### JavaScript
 - **Zwei JS-Dateien**, beide `defer` in `_layouts/default.html`:
   - `assets/js/theme.js` — Theme-Toggle (Auto → Light → Dark), persistiert
-    in `localStorage` (Key: `theme`).
+    in `localStorage` (Key: `theme`). Löst beim aktiven Umschalten
+    zusätzlich den Degauss-Effekt aus (`.theme-degauss` auf `.crt-screen`).
   - `assets/js/effects.js` — CRT-/Terminal-Effekte. Konzept, Roadmap &
-    To-Do: `EFFEKTE.md` (im Build `exclude`d). Stand: Phasen 1 & 2
-    erledigt — Boot-Splash der Startseite (`initBootSplash()`: Cursor
-    blinkt → Name wird getippt → blinkt nach → Overlay blendet weg) und
-    gelegentliches CRT-Flackern auf allen Seiten (`initCrtGlitch()`:
-    1-zu-10-Wurf, nach 4–25 s ein kurzes Zucken des `.crt-screen`-Wrappers).
+    To-Do: `EFFEKTE.md` (im Build `exclude`d). Aktuell: Boot-Splash der
+    Startseite (`initBootSplash()`: Cursor blinkt → Name wird getippt →
+    blinkt nach → Overlay blendet weg) und gelegentliches CRT-Flackern
+    auf allen Seiten (`initCrtGlitch()`: 1-zu-10-Wurf, nach 4–25 s ein
+    kurzes Zucken des `.crt-screen`-Wrappers).
 - Dazu gibt es **zwei Inline-Scripts** im `<head>` (`_includes/head.html`):
   die Theme-Pre-Hydration (verhindert FOUC) und — nur auf der Startseite —
   der Boot-Splash-Entscheider (würfelt 1-zu-5, max. 1× pro Browser-Session

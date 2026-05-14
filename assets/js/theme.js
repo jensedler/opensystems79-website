@@ -8,6 +8,7 @@
   var toggle = document.getElementById('theme-toggle');
   var label = toggle ? toggle.querySelector('[data-theme-label]') : null;
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  var crtScreen = document.querySelector('.crt-screen');
 
   function currentMode() {
     var stored = null;
@@ -43,11 +44,32 @@
     var idx = modes.indexOf(currentMode());
     var next = modes[(idx + 1) % modes.length];
     applyTheme(next);
+    degauss();
+  }
+
+  /* Degauss: beim aktiven Umschalten den .crt-screen-Wrapper kurz wackeln
+     lassen — wie ein CRT, der sich nach dem "Kanalwechsel" neu
+     synchronisiert. Reduced-Motion wird respektiert. */
+  function degauss() {
+    if (!crtScreen) return;
+    if (window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    crtScreen.classList.remove('theme-degauss');
+    void crtScreen.offsetWidth;   /* Reflow erzwingen → Neustart bei schnellem Mehrfachklick */
+    crtScreen.classList.add('theme-degauss');
   }
 
   if (toggle) {
     toggle.addEventListener('click', cycle);
     updateLabel(currentMode());
+  }
+
+  if (crtScreen) {
+    crtScreen.addEventListener('animationend', function (e) {
+      if (e.animationName === 'theme-degauss') {
+        crtScreen.classList.remove('theme-degauss');
+      }
+    });
   }
 
   mq.addEventListener && mq.addEventListener('change', function () {

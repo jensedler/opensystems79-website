@@ -2,10 +2,10 @@
 
 Planungsdokument für die „delightful" Effekte auf opensystems79.de.
 **Kein** Teil des Deployments (in `_config.yml` unter `exclude`).
-Stand: 2026-05-14 — Phasen 0–2 umgesetzt und abgenommen (Boot-Splash +
-CRT-Flackern). Backlog-Effekte in Arbeit: 404-Glitch umgesetzt, Degauss
-beim Theme-Wechsel als Nächstes. Danach Phase 3 (Politur & QA).
-Detaillierter Fortschritt: siehe To-Do-Liste unten.
+Stand: 2026-05-14 — alle 4 Effekte umgesetzt und abgenommen (Boot-Splash,
+CRT-Flackern, 404-Glitch, Degauss). Phase 3 (Politur & QA) im Code
+abgeschlossen; es bleiben die Browser-Checks (Light/Dark, Mobile,
+reduced-motion) für Jens. Detaillierter Fortschritt: siehe To-Do unten.
 
 ## Ziel & Haltung
 
@@ -125,7 +125,7 @@ und nicht wie ein Rendering-Bug wirkt. Immer noch kurz (0,85 s).
 | Idee | Beschreibung | Aufwand / Risiko | Status |
 |---|---|---|---|
 | **404-Glitch** | Der ganze Inhaltsbereich der terminal-gestylten 404-Seite (`.error-page`, ohne Header) glitcht alle paar Sekunden kurz auf. | klein / niedrig | ✅ umgesetzt |
-| **Degauss beim Theme-Wechsel** | Beim Umschalten Light/Dark ein kurzes Wackeln + Helligkeitsblitz, wie „Kanal umschalten". Klinkt sich direkt in `theme.js` ein. | klein / niedrig | → als Nächstes |
+| **Degauss beim Theme-Wechsel** | Beim Umschalten Light/Dark ein kurzes Wackeln + Helligkeitsblitz, wie „Kanal umschalten". Klinkt sich direkt in `theme.js` ein. | klein / niedrig | ✅ umgesetzt |
 | **Scanline-/Vignette-Layer** | Sehr dezente, dauerhafte Scanlines + Vignette als Overlay (evtl. nur Dark-Mode, evtl. per Toggle). | klein / mittel — kann schnell „zu viel" wirken | offen |
 | **Title-Decode** | Post-Titel „entschlüsseln" sich beim Laden aus Zufallsglyphen zum echten Text (Matrix-Style), einmalig, schnell. | mittel / niedrig | offen |
 | **CRT-Power-off** | Beim Verlassen/Klick auf externe Links die klassische „Zusammenfall-zu-Punkt"-Animation. | mittel / hoch — kann Navigation träge wirken lassen | offen |
@@ -197,23 +197,48 @@ Abzuarbeiten von oben nach unten. Phase 0 ist Voraussetzung für 1 & 2.
 - [x] `jekyll build --trace` sauber, Glitch-Markup im `_site/404.html`
 - [ ] Test im Browser: von Jens abzunehmen
 
-### Effekt 4 — Degauss beim Theme-Wechsel
+### Effekt 4 — Degauss beim Theme-Wechsel ✅
 
-- [ ] `theme.js`: beim Umschalten kurz eine Klasse auf `<html>` setzen und
-      nach der Animation wieder entfernen
-- [ ] CSS (`main.scss`): `@keyframes` für kurzes Wackeln + Helligkeitsblitz,
+- [x] `theme.js`: beim Toggle-Klick `degauss()` — setzt `.theme-degauss`
+      auf `.crt-screen` (mit Reflow-Neustart bei schnellem Mehrfachklick),
+      reduced-motion-Skip, entfernt die Klasse nach `animationend`
+- [x] CSS (`main.scss`): `@keyframes theme-degauss` — gedämpfte Schwingung
+      (scale/skewX-Wackeln + Helligkeitspuls + Hauch chromatischer Versatz),
       `@media`-Guard für reduced-motion
-- [ ] `jekyll build --trace` sauber
+- [x] Rebuild sauber (LiveReload-Server)
 - [ ] Test im Browser: von Jens abzunehmen
 
 ### Phase 3 — Politur & QA
 
-- [ ] `bundle exec jekyll build --trace` ohne Errors/Warnings
-- [ ] Beide Effekte in Light **und** Dark prüfen
-- [ ] Mobile (≤ 32rem) prüfen — Splash zentriert, Flackern unauffällig
-- [ ] `prefers-reduced-motion` global gegengeprüft (beide Effekte aus)
-- [ ] Sicherstellen: `effects.js` ist nicht in `_config.yml` `exclude`
-      (soll ausgeliefert werden), `EFFEKTE.md` schon
+Im Code erledigt:
+
+- [x] `bundle exec jekyll build --trace` ohne Errors/Warnings
+- [x] Deployment-Hygiene: `effects.js` wird ausgeliefert, `EFFEKTE.md` ist
+      `exclude`d, keine `[TEMP-TEST]`-Reste, alle 4 Effekte im `_site`
+      verdrahtet
+- [x] reduced-motion bei allen 4 Effekten abgesichert: Splash (JS-Gate im
+      `<head>`), CRT-Flackern (JS-Gate + CSS-`@media`), 404-Glitch
+      (CSS-`@media`), Degauss (JS-Gate + CSS-`@media`)
+- [x] Theme-Tauglichkeit im Code geprüft: Splash nutzt Theme-Variablen;
+      Glitch-/Degauss-Effekte feste rot/cyan-Werte (bewusst — wirken auf
+      beiden Hintergründen)
+- [x] Politur: stale Kommentar-Header in `effects.js` aktualisiert,
+      `screen` → `crtScreen` umbenannt (verschattete `window.screen`)
+
+Browser-Checks (von Jens, am besten vor dem Merge):
+
+- [ ] Alle 4 Effekte in Light **und** Dark gegenchecken
+- [ ] Mobile (≤ 32rem): Splash zentriert, Flackern/Degauss unauffällig,
+      404-Glitch-Zeile läuft nicht aus dem Kasten
+- [ ] `prefers-reduced-motion` aktiv: kein Splash, kein Flackern, kein
+      Degauss; 404-Seite ohne Bewegung (statischer Versatz darf bleiben)
+
+Bekannte Kleinigkeit:
+
+- Die `[ERROR]`-Zeile (`.glitch-text`, `white-space: nowrap`) kann auf sehr
+  schmalen Viewports (< ~322 px) minimal aus dem `.error-code`-Kasten
+  ragen. Betrifft nur die 404-Seite auf sehr kleinen/alten Geräten — bei
+  Bedarf später fixen (z. B. `overflow-x: auto` auf `.error-code`).
 
 ### Backlog — weitere Ideen
 
