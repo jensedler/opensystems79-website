@@ -1,5 +1,5 @@
 ---
-title: "Woran messen wir KI?"
+title: "Seid nett zur KI!"
 date: 2026-06-03 17:42:00 +0200
 description: "Seid nett zur KI! Nicht sie wird es euch danken, aber ihr euch selbst."
 ---
