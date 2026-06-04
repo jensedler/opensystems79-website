@@ -8,4 +8,4 @@ Ich gebe zu, ich verbringe viel zu viel Zeit auf TikTok. Mein ausrede ist natür
 
 Ab und an ist aber auch mal ein richtige Perle dabei. Meine letzte Entdeckung ist die Band [Larkin Poe](https://www.larkinpoe.com). Das sind im wesentlichen zwei Schwestern, die richtige guten Country Rock mit bluesigen Einflüssen spielen. Das Highlight ist dabei für mich die richtig geile Slide-Guitar. Ein Träumchen! 
 
-Aber was erzähl´ ich, schaut doch einfach mal selbst: [](https://www.youtube.com/watch?v=PQhv0rwTYZI)
+Aber was erzähl´ ich, schaut doch einfach mal selbst: [https://www.youtube.com/watch?v=PQhv0rwTYZI](https://www.youtube.com/watch?v=PQhv0rwTYZI)
