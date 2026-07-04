@@ -1,5 +1,5 @@
 ---
-title: "Larkin Poe"
+title: "komische gefühle bei der ki-attribution"
 date: 2026-07-04 09:42:00 +0200
 description: "Wenn man sich unwohl dabei fühlt, transparent zu machen, dass man etwas mit KI erstellt hat, sollte man es nicht mit KI machen."
 ---

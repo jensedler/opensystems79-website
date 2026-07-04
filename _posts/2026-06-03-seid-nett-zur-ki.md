@@ -1,5 +1,5 @@
 ---
-title: "Seid nett zur KI!"
+title: "seid nett zur ki!"
 date: 2026-06-03 17:42:00 +0200
 description: "Seid nett zur KI! Nicht sie wird es euch danken, aber ihr euch selbst."
 ---

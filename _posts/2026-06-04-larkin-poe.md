@@ -1,5 +1,5 @@
 ---
-title: "Larkin Poe"
+title: "larkin poe"
 date: 2026-06-04 09:42:00 +0200
 description: "Meine jüngste musikalische Entdeckung: Larkin Poe – richtig geile Country Music im besten Sinne."
 ---

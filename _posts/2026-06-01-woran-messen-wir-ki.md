@@ -1,5 +1,5 @@
 ---
-title: "Woran messen wir KI?"
+title: "woran messen wir ki?"
 date: 2026-06-01 16:00:00 +0200
 description: "Wenn KI-Anwendungsfälle getestet werden, wird immer Fehlerfreiheit erwartet. Warum eigentlich? Reicht es nicht, wenn die KI weniger Fehler macht, als wir Menschen?"
 ---
